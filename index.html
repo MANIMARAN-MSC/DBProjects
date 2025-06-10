@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud Security Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --danger-color: #f72585;
+      --success-color: #4cc9f0;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --widget-bg: rgba(255, 255, 255, 0.7);
+      --text-color: #2b2d42;
+      --text-light: #8d99ae;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --border-radius: 12px;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: var(--text-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      background: 
+        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+        url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: blur(2px);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: white;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 5px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+
+    button:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .category {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .category:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .category h3 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--secondary-color);
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--accent-color);
+    }
+
+    .widget {
+      background: var(--widget-bg);
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--accent-color);
+      backdrop-filter: blur(3px);
+    }
+
+    .widget:hover {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .widget span {
+      flex: 1;
+      font-size: 0.95rem;
+    }
+
+    .widget button {
+      background: var(--danger-color);
+      font-size: 0.8rem;
+      padding: 8px 12px;
+      margin-left: 10px;
+    }
+
+    .widget button:hover {
+      background: #d11a6f;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal h3 {
+      margin-top: 0;
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+
+    .modal input,
+    .modal select {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      transition: border 0.3s ease;
+    }
+
+    .modal input:focus,
+    .modal select:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    #search {
+      width: 300px;
+      max-width: 90%;
+      padding: 12px 20px;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      font-size: 1rem;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    #search:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      background-color: white;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      
+      .controls {
+        flex-direction: column;
+      }
+      
+      #search {
+        width: 100%;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .category {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .category:nth-child(1) { animation-delay: 0.1s; }
+    .category:nth-child(2) { animation-delay: 0.2s; }
+    .category:nth-child(3) { animation-delay: 0.3s; }
+  </style>
+</head>
+<body>
+  <h1>Cloud Security Dashboard</h1>
+  <div class="controls">
+    <button onclick="openModal()">+ Add Widget</button>
+    <input type="text" id="search" placeholder="Search widgets..." onkeyup="filterWidgets()">
+  </div>
+
+  <div class="dashboard" id="dashboard"></div>
+
+  <div class="modal" id="widgetModal">
+    <div class="modal-content">
+      <h3>Add New Widget</h3>
+      <select id="categorySelect"></select>
+      <input type="text" id="widgetName" placeholder="Widget Name" />
+      <input type="text" id="widgetText" placeholder="Widget Content" />
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button onclick="addWidget()" style="flex: 1;">Add Widget</button>
+        <button onclick="closeModal()" style="flex: 1; background: var(--text-light);">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      "CSPM Executive Dashboard": [
+        { name: "Security Score", text: "92%" },
+        { name: "Critical Issues", text: "3 unresolved" },
+        { name: "Compliance Status", text: "85% compliant" }
+      ],
+      "Registry Scan": [
+        { name: "Last Scan", text: "2 hours ago" },
+        { name: "Vulnerabilities", text: "15 detected" },
+        { name: "Image Count", text: "247 scanned" }
+      ],
+      "CSPM Dashboard": [
+        { name: "Resources Monitored", text: "142" },
+        { name: "Alerts", text: "8 new today" },
+        { name: "Policy Violations", text: "12 detected" }
+      ]
+    };
+
+    function renderDashboard() {
+      const dashboard = document.getElementById("dashboard");
+      dashboard.innerHTML = "";
+
+      for (let category in data) {
+        const catEl = document.createElement("div");
+        catEl.className = "category";
+
+        const header = document.createElement("h3");
+        header.innerText = category;
+        catEl.appendChild(header);
+
+        if (data[category].length === 0) {
+          const emptyMsg = document.createElement("p");
+          emptyMsg.style.color = "var(--text-light)";
+          emptyMsg.style.fontStyle = "italic";
+          emptyMsg.innerText = "No widgets in this category";
+          catEl.appendChild(emptyMsg);
+        } else {
+          data[category].forEach((widget, idx) => {
+            const widgetEl = document.createElement("div");
+            widgetEl.className = "widget";
+            widgetEl.dataset.name = widget.name.toLowerCase();
+            widgetEl.dataset.text = widget.text.toLowerCase();
+
+            const span = document.createElement("span");
+            span.innerText = ${widget.name}: ${widget.text};
+
+            const removeBtn = document.createElement("button");
+            removeBtn.innerText = "Remove";
+            removeBtn.onclick = () => removeWidget(category, idx);
+
+            widgetEl.appendChild(span);
+            widgetEl.appendChild(removeBtn);
+            catEl.appendChild(widgetEl);
+          });
+        }
+
+        dashboard.appendChild(catEl);
+      }
+    }
+
+    function openModal() {
+      document.getElementById("widgetModal").style.display = "flex";
+      const select = document.getElementById("categorySelect");
+      select.innerHTML = "";
+      Object.keys(data).forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.innerText = cat;
+        select.appendChild(option);
+      });
+    }
+
+    function closeModal() {
+      document.getElementById("widgetModal").style.display = "none";
+      document.getElementById("widgetName").value = "";
+      document.getElementById("widgetText").value = "";
+    }
+
+    function addWidget() {
+      const category = document.getElementById("categorySelect").value;
+      const name = document.getElementById("widgetName").value.trim();
+      const text = document.getElementById("widgetText").value.trim();
+      
+      if (!name || !text) {
+        alert("Please fill in both fields");
+        return;
+      }
+      
+      data[category].push({ name, text });
+      closeModal();
+      renderDashboard();
+    }
+
+    function removeWidget(category, index) {
+      if (confirm("Are you sure you want to remove this widget?")) {
+        data[category].splice(index, 1);
+        renderDashboard();
+      }
+    }
+
+    function filterWidgets() {
+      const query = document.getElementById("search").value.toLowerCase();
+      document.querySelectorAll(".widget").forEach(widget => {
+        const match =
+          widget.dataset.name.includes(query) ||
+          widget.dataset.text.includes(query);
+        widget.style.display = match ? "flex" : "none";
+      });
+    }
+
+    // Initialize the dashboard
+    document.addEventListener('DOMContentLoaded', renderDashboard);
+  </script>
+</body>
+</html>
