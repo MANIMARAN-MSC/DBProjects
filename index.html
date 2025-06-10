@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cloud Security Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --primary-color: #4361ee;
@@ -12,12 +13,15 @@
       --accent-color: #4895ef;
       --danger-color: #f72585;
       --success-color: #4cc9f0;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --widget-bg: rgba(255, 255, 255, 0.7);
+      --warning-color: #f8961e;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --widget-bg: rgba(255, 255, 255, 0.85);
       --text-color: #2b2d42;
       --text-light: #8d99ae;
       --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.15);
       --border-radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     body {
@@ -28,20 +32,35 @@
       line-height: 1.6;
       min-height: 100vh;
       background: 
-        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)),
         url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
       background-size: cover;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
     }
 
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       text-align: center;
       margin-bottom: 1.5rem;
       color: white;
       font-weight: 600;
       letter-spacing: -0.5px;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+      border-radius: 3px;
     }
 
     button {
@@ -54,18 +73,23 @@
       cursor: pointer;
       font-weight: 500;
       font-size: 0.95rem;
-      transition: all 0.3s ease;
+      transition: var(--transition);
       box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     button:hover {
       background-color: var(--secondary-color);
       transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
     }
 
     .dashboard {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 25px;
       margin-top: 30px;
     }
@@ -75,14 +99,26 @@
       border-radius: var(--border-radius);
       padding: 20px;
       box-shadow: var(--shadow);
-      transition: transform 0.3s ease;
+      transition: var(--transition);
       backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .category::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
     }
 
     .category:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: var(--shadow-hover);
     }
 
     .category h3 {
@@ -91,6 +127,9 @@
       color: var(--secondary-color);
       padding-bottom: 10px;
       border-bottom: 2px solid var(--accent-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .widget {
@@ -101,19 +140,33 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: all 0.3s ease;
+      transition: var(--transition);
       border-left: 4px solid var(--accent-color);
       backdrop-filter: blur(3px);
+      position: relative;
+    }
+
+    .widget::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+      pointer-events: none;
     }
 
     .widget:hover {
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      background: rgba(255, 255, 255, 0.85);
+      box-shadow: var(--shadow);
+      background: rgba(255, 255, 255, 0.95);
+      transform: translateX(5px);
     }
 
     .widget span {
       flex: 1;
       font-size: 0.95rem;
+      font-weight: 500;
     }
 
     .widget button {
@@ -139,6 +192,7 @@
       align-items: center;
       z-index: 999;
       backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease-out;
     }
 
     .modal-content {
@@ -146,14 +200,30 @@
       padding: 30px;
       border-radius: var(--border-radius);
       width: 90%;
-      max-width: 400px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      max-width: 450px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      transform: translateY(0);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
     }
 
     .modal h3 {
       margin-top: 0;
       color: var(--primary-color);
       font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .modal input,
@@ -164,7 +234,8 @@
       font-size: 1rem;
       border: 1px solid #ddd;
       border-radius: 8px;
-      transition: border 0.3s ease;
+      transition: var(--transition);
+      font-family: 'Poppins', sans-serif;
     }
 
     .modal input:focus,
@@ -175,15 +246,19 @@
     }
 
     #search {
-      width: 300px;
+      width: 350px;
       max-width: 90%;
       padding: 12px 20px;
       border: 1px solid #ddd;
       border-radius: 30px;
       font-size: 1rem;
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: rgba(255, 255, 255, 0.95);
       box-shadow: var(--shadow);
-      transition: all 0.3s ease;
+      transition: var(--transition);
+      padding-left: 45px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238d99ae' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 15px center;
     }
 
     #search:focus {
@@ -200,6 +275,46 @@
       gap: 15px;
       margin-bottom: 20px;
       flex-wrap: wrap;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-light);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: var(--accent-color);
+    }
+
+    .empty-state p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .status-critical {
+      background-color: var(--danger-color);
+      box-shadow: 0 0 5px var(--danger-color);
+    }
+
+    .status-warning {
+      background-color: var(--warning-color);
+      box-shadow: 0 0 5px var(--warning-color);
+    }
+
+    .status-success {
+      background-color: var(--success-color);
+      box-shadow: 0 0 5px var(--success-color);
     }
 
     @media (max-width: 600px) {
@@ -220,10 +335,16 @@
       }
     }
 
-    /* Animation */
+    /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
 
     .category {
@@ -233,26 +354,30 @@
     .category:nth-child(1) { animation-delay: 0.1s; }
     .category:nth-child(2) { animation-delay: 0.2s; }
     .category:nth-child(3) { animation-delay: 0.3s; }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
   </style>
 </head>
 <body>
-  <h1>Cloud Security Dashboard</h1>
+  <h1><i class="fas fa-shield-alt"></i> Cloud Security Dashboard</h1>
   <div class="controls">
-    <button onclick="openModal()">+ Add Widget</button>
-    <input type="text" id="search" placeholder="Search widgets..." onkeyup="filterWidgets()">
+    <button onclick="openModal()"><i class="fas fa-plus"></i> Add Widget</button>
+    <input type="text" id="search" placeholder="Search widgets...">
   </div>
 
   <div class="dashboard" id="dashboard"></div>
 
   <div class="modal" id="widgetModal">
     <div class="modal-content">
-      <h3>Add New Widget</h3>
+      <h3><i class="fas fa-cube"></i> Add New Widget</h3>
       <select id="categorySelect"></select>
       <input type="text" id="widgetName" placeholder="Widget Name" />
       <input type="text" id="widgetText" placeholder="Widget Content" />
       <div style="display: flex; gap: 10px; margin-top: 15px;">
-        <button onclick="addWidget()" style="flex: 1;">Add Widget</button>
-        <button onclick="closeModal()" style="flex: 1; background: var(--text-light);">Cancel</button>
+        <button onclick="addWidget()" style="flex: 1;"><i class="fas fa-check"></i> Add Widget</button>
+        <button onclick="closeModal()" style="flex: 1; background: var(--text-light);"><i class="fas fa-times"></i> Cancel</button>
       </div>
     </div>
   </div>
@@ -260,19 +385,19 @@
   <script>
     const data = {
       "CSPM Executive Dashboard": [
-        { name: "Security Score", text: "92%" },
-        { name: "Critical Issues", text: "3 unresolved" },
-        { name: "Compliance Status", text: "85% compliant" }
+        { name: "Security Score", text: "92%", status: "success" },
+        { name: "Critical Issues", text: "3 unresolved", status: "critical" },
+        { name: "Compliance Status", text: "85% compliant", status: "warning" }
       ],
       "Registry Scan": [
-        { name: "Last Scan", text: "2 hours ago" },
-        { name: "Vulnerabilities", text: "15 detected" },
-        { name: "Image Count", text: "247 scanned" }
+        { name: "Last Scan", text: "2 hours ago", status: "success" },
+        { name: "Vulnerabilities", text: "15 detected", status: "warning" },
+        { name: "Image Count", text: "247 scanned", status: "success" }
       ],
       "CSPM Dashboard": [
-        { name: "Resources Monitored", text: "142" },
-        { name: "Alerts", text: "8 new today" },
-        { name: "Policy Violations", text: "12 detected" }
+        { name: "Resources Monitored", text: "142", status: "success" },
+        { name: "Alerts", text: "8 new today", status: "warning" },
+        { name: "Policy Violations", text: "12 detected", status: "critical" }
       ]
     };
 
@@ -285,14 +410,16 @@
         catEl.className = "category";
 
         const header = document.createElement("h3");
-        header.innerText = category;
+        header.innerHTML = `<i class="fas fa-folder"></i> ${category}`;
         catEl.appendChild(header);
 
         if (data[category].length === 0) {
-          const emptyMsg = document.createElement("p");
-          emptyMsg.style.color = "var(--text-light)";
-          emptyMsg.style.fontStyle = "italic";
-          emptyMsg.innerText = "No widgets in this category";
+          const emptyMsg = document.createElement("div");
+          emptyMsg.className = "empty-state";
+          emptyMsg.innerHTML = `
+            <i class="fas fa-box-open"></i>
+            <p>No widgets in this category</p>
+          `;
           catEl.appendChild(emptyMsg);
         } else {
           data[category].forEach((widget, idx) => {
@@ -301,12 +428,24 @@
             widgetEl.dataset.name = widget.name.toLowerCase();
             widgetEl.dataset.text = widget.text.toLowerCase();
 
+            const statusClass = widget.status ? `status-${widget.status}` : "";
+            const statusIndicator = widget.status ? 
+              `<span class="status-indicator ${statusClass}"></span>` : "";
+
             const span = document.createElement("span");
-            span.innerText = ${widget.name}: ${widget.text};
+            span.innerHTML = `${statusIndicator}<strong>${widget.name}:</strong> ${widget.text}`;
 
             const removeBtn = document.createElement("button");
-            removeBtn.innerText = "Remove";
-            removeBtn.onclick = () => removeWidget(category, idx);
+            removeBtn.innerHTML = "<i class='fas fa-trash'></i> Remove";
+            removeBtn.onclick = (e) => {
+              e.stopPropagation();
+              removeWidget(category, idx);
+            };
+
+            // Add click effect to view details
+            widgetEl.onclick = () => {
+              alert(`Details for ${widget.name}:\n${widget.text}`);
+            };
 
             widgetEl.appendChild(span);
             widgetEl.appendChild(removeBtn);
@@ -346,7 +485,12 @@
         return;
       }
       
-      data[category].push({ name, text });
+      // Determine status based on content
+      let status = "success";
+      if (text.includes("unresolved") || text.includes("detected")) status = "warning";
+      if (text.includes("critical") || text.includes("violations")) status = "critical";
+      
+      data[category].push({ name, text, status });
       closeModal();
       renderDashboard();
     }
@@ -369,7 +513,20 @@
     }
 
     // Initialize the dashboard
-    document.addEventListener('DOMContentLoaded', renderDashboard);
+    document.addEventListener('DOMContentLoaded', () => {
+      renderDashboard();
+      
+      // Add event listener for search
+      document.getElementById("search").addEventListener('keyup', filterWidgets);
+      
+      // Add sample animation to first critical item
+      setTimeout(() => {
+        const criticalItems = document.querySelectorAll('.status-critical');
+        if (criticalItems.length > 0) {
+          criticalItems[0].parentElement.parentElement.classList.add('pulse');
+        }
+      }, 1000);
+    });
   </script>
 </body>
 </html>
